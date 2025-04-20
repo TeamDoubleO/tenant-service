@@ -14,7 +14,7 @@ public class SwaggerConfig {
                 .info(
                         new Info()
                                 .title("Employee Service API") // 서비스 이름
-                                .description("사원 관련 API 명세서")
+                                .description("사원 API 명세서")
                                 .version("v1.0.0"));
     }
 }

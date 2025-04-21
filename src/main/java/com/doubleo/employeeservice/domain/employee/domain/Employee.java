@@ -5,9 +5,11 @@ import com.doubleo.employeeservice.domain.department.domain.Department;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @NoArgsConstructor
 public class Employee extends BaseTimeEntity {
     @Id
@@ -18,7 +20,7 @@ public class Employee extends BaseTimeEntity {
     @Column(name = "employee_email")
     private String email; // 정규화 추가
 
-    @Column(name = "employee_pw")
+    @Column(name = "employee_password")
     private String password;
 
     @Column(name = "employee_id_number")
@@ -50,13 +52,19 @@ public class Employee extends BaseTimeEntity {
             String password,
             String idNumber,
             String name,
+            String nameEng,
             Department department,
+            String position,
+            String profileImageUrl,
             EmployeeStatus status) {
         this.email = email;
         this.password = password;
         this.idNumber = idNumber;
         this.name = name;
+        this.nameEng = nameEng;
         this.department = department;
+        this.position = position;
+        this.profileImageUrl = profileImageUrl;
         this.status = status;
     }
 
@@ -65,15 +73,20 @@ public class Employee extends BaseTimeEntity {
             String password,
             String idNumber,
             String name,
+            String nameEng,
             Department department,
-            EmployeeStatus status) {
-        return builder()
+            String position,
+            String profileImageUrl) {
+        return Employee.builder()
                 .email(email)
                 .password(password)
                 .idNumber(idNumber)
                 .name(name)
+                .nameEng(nameEng)
                 .department(department)
-                .status(status)
+                .position(position)
+                .profileImageUrl(profileImageUrl)
+                .status(EmployeeStatus.ON_DUTY)
                 .build();
     }
 }

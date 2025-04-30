@@ -1,6 +1,6 @@
 spring:
   application:
-    name: member-service
+    name: tenant-service
 
   config:
     import: optional:configserver:${CONFIG_SERVER_URL}

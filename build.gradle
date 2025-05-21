@@ -69,7 +69,7 @@ dependencies {
 
     //gRPC
     //모듈
-    implementation "com.doubleo.grpc:tenant-interface:0.0.9.1"
+    implementation "com.doubleo.grpc:tenant-interface:0.1.9"
 
     //gRPC 런타임
     implementation "io.grpc:grpc-netty:1.63.0"

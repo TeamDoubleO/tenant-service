@@ -13,10 +13,4 @@ spring:
 
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:local}
-    include:
-      - swagger
-      - datasource
-      - eureka
-      - actuator
-      - redis
-      - grpc
+    include: ${SPRING_PROFILES_INCLUDE:swagger,datasource,actuator,redis,grpc}

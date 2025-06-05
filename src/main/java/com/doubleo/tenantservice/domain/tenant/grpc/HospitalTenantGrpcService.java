@@ -1,13 +1,13 @@
-package com.doubleo.tenantservice.domain.tenant.service;
+package com.doubleo.tenantservice.domain.tenant.grpc;
 
 import com.doubleo.tenantservice.domain.tenant.domain.HospitalTenant;
-import com.doubleo.tenantservice.domain.tenant.grpc.HospitalIdToTenantIdRequest;
-import com.doubleo.tenantservice.domain.tenant.grpc.HospitalIdToTenantIdResponse;
-import com.doubleo.tenantservice.domain.tenant.grpc.HospitalTenantServiceGrpc;
 import com.doubleo.tenantservice.domain.tenant.repository.HospitalTenantRepository;
+import com.doubleo.tenantservice.domain.tenant.service.HospitalTenantCacheService;
 import com.doubleo.tenantservice.global.exception.CommonException;
 import com.doubleo.tenantservice.global.exception.errorcode.TenantErrorCode;
 import io.grpc.stub.StreamObserver;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
@@ -53,6 +53,30 @@ public class HospitalTenantGrpcService
                         .setTenantId(tenantId)
                         .build();
 
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void updateTokensByTenantId(
+            UpdateTokensRequest request, StreamObserver<UpdateTokensResponse> responseObserver) {
+        List<TenantWalletToken> tokens = request.getTokensList();
+        List<HospitalTenant> updatedTenants = new ArrayList<>();
+        for (TenantWalletToken token : tokens) {
+            String tenantId = token.getTenantId();
+            String walletToken = token.getWalletToken();
+
+            HospitalTenant tenant =
+                    hospitalTenantRepository
+                            .findByTenantId(tenantId)
+                            .orElseThrow(
+                                    () -> new CommonException(TenantErrorCode.TENANT_NOT_FOUND));
+            tenant.setWalletToken(walletToken);
+            updatedTenants.add(tenant);
+        }
+        hospitalTenantRepository.saveAll(updatedTenants);
+
+        UpdateTokensResponse response = UpdateTokensResponse.newBuilder().setStatus("OK").build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }

@@ -2,6 +2,7 @@ package com.doubleo.tenantservice.domain.tenant.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -17,4 +18,6 @@ public class HospitalTenant {
 
     @Column(nullable = false, unique = true)
     private String tenantId;
+
+    @Setter @Column private String walletToken;
 }

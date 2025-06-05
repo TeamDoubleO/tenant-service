@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface HospitalTenantRepository extends JpaRepository<HospitalTenant, Long> {
     Optional<HospitalTenant> findHospitalTenantByHospitalId(Long hospitalId);
+
+    Optional<HospitalTenant> findByTenantId(String tenantId);
 }

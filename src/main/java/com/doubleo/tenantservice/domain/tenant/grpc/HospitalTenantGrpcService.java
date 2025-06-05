@@ -6,6 +6,7 @@ import com.doubleo.tenantservice.domain.tenant.service.HospitalTenantCacheServic
 import com.doubleo.tenantservice.global.exception.CommonException;
 import com.doubleo.tenantservice.global.exception.errorcode.TenantErrorCode;
 import io.grpc.stub.StreamObserver;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,14 +61,20 @@ public class HospitalTenantGrpcService
     public void updateTokensByTenantId(
             UpdateTokensRequest request, StreamObserver<UpdateTokensResponse> responseObserver) {
         List<TenantWalletToken> tokens = request.getTokensList();
+        List<HospitalTenant> updatedTenants = new ArrayList<>();
         for (TenantWalletToken token : tokens) {
             String tenantId = token.getTenantId();
             String walletToken = token.getWalletToken();
 
-            HospitalTenant tenant = hospitalTenantRepository.findByTenantId(tenantId).orElseThrow();
+            HospitalTenant tenant =
+                    hospitalTenantRepository
+                            .findByTenantId(tenantId)
+                            .orElseThrow(
+                                    () -> new CommonException(TenantErrorCode.TENANT_NOT_FOUND));
             tenant.setWalletToken(walletToken);
-            hospitalTenantRepository.save(tenant);
+            updatedTenants.add(tenant);
         }
+        hospitalTenantRepository.saveAll(updatedTenants);
 
         UpdateTokensResponse response = UpdateTokensResponse.newBuilder().setStatus("OK").build();
         responseObserver.onNext(response);

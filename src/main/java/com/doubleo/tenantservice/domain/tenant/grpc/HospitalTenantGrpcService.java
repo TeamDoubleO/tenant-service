@@ -58,6 +58,20 @@ public class HospitalTenantGrpcService
     }
 
     @Override
+    public void getTokenByTenantId(
+            GetTokensRequest request, StreamObserver<GetTokenResponse> responseObserver) {
+        String tenantId = request.getTenantId();
+        HospitalTenant tenant =
+                hospitalTenantRepository
+                        .findByTenantId(tenantId)
+                        .orElseThrow(() -> new CommonException(TenantErrorCode.TENANT_NOT_FOUND));
+        GetTokenResponse response =
+                GetTokenResponse.newBuilder().setWalletToken(tenant.getWalletToken()).build();
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+    }
+
+    @Override
     public void updateTokensByTenantId(
             UpdateTokensRequest request, StreamObserver<UpdateTokensResponse> responseObserver) {
         List<TenantWalletToken> tokens = request.getTokensList();
